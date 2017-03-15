@@ -17,7 +17,7 @@
     // (for git) or "default" (for mercurial).
     // "branches": ["master"], // for git
     // "branches": ["default"],    // for mercurial
-    "branches": ["master", "fix338"],
+    "branches": ["master", "vectorise_aggregated_param"],
 
     // The DVCS being used.  If not set, it will be automatically
     // determined from "repo" by looking at the protocol in the URL

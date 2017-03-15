@@ -28,7 +28,6 @@ def make_simple_resource_zone(data, name, supply_loc=9, supply_scale=1, demand_l
 
 def make_simple_connections(data, number_of_resource_zones, density=10, loc=15, scale=5):
     num_connections = (number_of_resource_zones ** 2) * density // 100 // 2
-    print(num_connections)
 
     connections = np.random.randint(number_of_resource_zones, size=(num_connections, 2))
     max_flow = stats.norm.rvs(loc=loc, scale=scale, size=num_connections)
@@ -45,7 +44,7 @@ def make_simple_connections(data, number_of_resource_zones, density=10, loc=15, 
         add_connection(data, name, "WTW-{}".format(j))
 
         added.append((i, j))
-    print(len(added), num_connections)
+
 
 
 def make_simple_model(number_of_resource_zones=1, connection_density=10, solver=None):
@@ -57,7 +56,7 @@ def make_simple_model(number_of_resource_zones=1, connection_density=10, solver=
         },
         "timestepper": {
             "start": "2015-01-01",
-            "end": "2015-07-1",
+            "end": "2015-02-1",
             "timestep": 1
         },
         "nodes": [],
@@ -71,11 +70,12 @@ def make_simple_model(number_of_resource_zones=1, connection_density=10, solver=
     return Model.load(data, solver=solver)
 
 
+
 class StaticNetwork:
     params = [
-        [10, 25, 50],        # Number of zones
+        [10, 50],        # Number of zones
         [2, 5],     # Connection density
-        ['glpk', 'lpsolve']  # solver
+        ['glpk', ]  # solver
     ]
     param_names = [
         'number_of_resource_zones',
@@ -97,3 +97,83 @@ class StaticNetwork:
     def time_setup(self, nz, density, solver):
         self.model.dirty = True
         self.model.setup()
+
+
+class AggregatedParameter:
+    params = [
+        [10, 100, 500],
+    ]
+    param_names = [
+        'number_of_scenarios',
+    ]
+
+    def setup(self, number_of_scenarios):
+        from pywr.core import Scenario
+
+        data = {
+            "metadata": {
+                "title": "Simple 1",
+                "description": "A very simple example.",
+                "minimum_version": "0.1"
+            },
+            "timestepper": {
+                "start": "2015-01-01",
+                "end": "2015-02-1",
+                "timestep": 7
+            },
+            "nodes": [
+                {
+                    "type": "input",
+                    "name": "input",
+                },
+                {
+                    "type": "link",
+                    "name": "link"
+                },
+                {
+                    "type": "output",
+                    "name": "output",
+                    "cost": -10,
+                    "max_flow": "max_flow_param"
+                }
+            ],
+            "edges": [
+                ["input", "link"],
+                ["link", "output"]
+            ],
+            "parameters": {
+                "max_flow_param": {
+                    "type": "aggregated",
+                    "agg_func": "sum",
+                    "parameters": [
+                        {
+                            "type": "constant",
+                            "value": 5.0
+                        },
+                        {
+                            "type": "constant",
+                            "value": 5.0
+                        },
+                        {
+                            "type": "constant",
+                            "value": 5.0
+                        }
+                    ]
+                }
+            }
+        }
+
+        m = Model.load(data, )
+        Scenario(m, name='benchmark', size=number_of_scenarios)
+
+        m.setup()
+        self.model = m
+
+        self.param = m.parameters['max_flow_param']
+        self.ts = m.timestepper.current
+
+    def time_calc_values(self, number_of_scenarios):
+        self.param.calc_values(self.ts)
+
+    def teardown(self, number_of_scenarios):
+        del self.model
