@@ -1,0 +1,157 @@
+[
+    {
+        "change_rev": [
+            1121,
+            1125
+        ],
+        "idx": 0,
+        "last_err": 1.8680898966666657e-07,
+        "last_rev": 1130,
+        "last_value": 7.703354539999998e-07,
+        "name": "benchmarks.AggregatedParameter.time_calc_values",
+        "pretty_name": "benchmarks.AggregatedParameter.time_calc_values(10)",
+        "prev_value": 2.468721549999998e-06
+    },
+    {
+        "change_rev": [
+            1121,
+            1125
+        ],
+        "idx": 1,
+        "last_err": 2.4620064690000004e-06,
+        "last_rev": 1130,
+        "last_value": 1.1333081520000002e-06,
+        "name": "benchmarks.AggregatedParameter.time_calc_values",
+        "pretty_name": "benchmarks.AggregatedParameter.time_calc_values(100)",
+        "prev_value": 1.8647686329999997e-05
+    },
+    {
+        "change_rev": [
+            1121,
+            1125
+        ],
+        "idx": 2,
+        "last_err": 1.273379942e-05,
+        "last_rev": 1130,
+        "last_value": 2.553762209999999e-06,
+        "name": "benchmarks.AggregatedParameter.time_calc_values",
+        "pretty_name": "benchmarks.AggregatedParameter.time_calc_values(500)",
+        "prev_value": 0.00010723889139999998
+    },
+    {
+        "change_rev": null,
+        "idx": 0,
+        "last_err": 4.275649450000001e-08,
+        "last_rev": 1130,
+        "last_value": 4.846372684999999e-07,
+        "name": "benchmarks.AggregatedParameter.time_constant_calc_values",
+        "pretty_name": "benchmarks.AggregatedParameter.time_constant_calc_values(10)",
+        "prev_value": null
+    },
+    {
+        "change_rev": null,
+        "idx": 1,
+        "last_err": 3.2916116150000026e-07,
+        "last_rev": 1130,
+        "last_value": 8.046369065000002e-07,
+        "name": "benchmarks.AggregatedParameter.time_constant_calc_values",
+        "pretty_name": "benchmarks.AggregatedParameter.time_constant_calc_values(100)",
+        "prev_value": null
+    },
+    {
+        "change_rev": null,
+        "idx": 2,
+        "last_err": 1.5612286754999997e-06,
+        "last_rev": 1130,
+        "last_value": 2.1592967144999993e-06,
+        "name": "benchmarks.AggregatedParameter.time_constant_calc_values",
+        "pretty_name": "benchmarks.AggregatedParameter.time_constant_calc_values(500)",
+        "prev_value": null
+    },
+    {
+        "change_rev": null,
+        "idx": 0,
+        "last_err": 8.327129146153852e-05,
+        "last_rev": 1130,
+        "last_value": 0.002162570425,
+        "name": "benchmarks.StaticNetwork.time_run",
+        "pretty_name": "benchmarks.StaticNetwork.time_run(10, 2, 'glpk')",
+        "prev_value": null
+    },
+    {
+        "change_rev": null,
+        "idx": 1,
+        "last_err": 7.28392562307695e-05,
+        "last_rev": 1130,
+        "last_value": 0.00214736194,
+        "name": "benchmarks.StaticNetwork.time_run",
+        "pretty_name": "benchmarks.StaticNetwork.time_run(10, 5, 'glpk')",
+        "prev_value": null
+    },
+    {
+        "change_rev": [
+            1089,
+            1103
+        ],
+        "idx": 2,
+        "last_err": 2.1087322222221778e-05,
+        "last_rev": 1130,
+        "last_value": 0.00558412942,
+        "name": "benchmarks.StaticNetwork.time_run",
+        "pretty_name": "benchmarks.StaticNetwork.time_run(50, 2, 'glpk')",
+        "prev_value": 0.006709761030000001
+    },
+    {
+        "change_rev": [
+            1089,
+            1103
+        ],
+        "idx": 3,
+        "last_err": 0.005733680888888987,
+        "last_rev": 1130,
+        "last_value": 0.22766891499999975,
+        "name": "benchmarks.StaticNetwork.time_run",
+        "pretty_name": "benchmarks.StaticNetwork.time_run(50, 5, 'glpk')",
+        "prev_value": 0.35829627399999975
+    },
+    {
+        "change_rev": null,
+        "idx": 0,
+        "last_err": 2.0422981615384654e-05,
+        "last_rev": 1130,
+        "last_value": 0.0015780827640000004,
+        "name": "benchmarks.StaticNetwork.time_setup",
+        "pretty_name": "benchmarks.StaticNetwork.time_setup(10, 2, 'glpk')",
+        "prev_value": null
+    },
+    {
+        "change_rev": null,
+        "idx": 1,
+        "last_err": 2.0637652423076958e-05,
+        "last_rev": 1130,
+        "last_value": 0.0015728751015000003,
+        "name": "benchmarks.StaticNetwork.time_setup",
+        "pretty_name": "benchmarks.StaticNetwork.time_setup(10, 5, 'glpk')",
+        "prev_value": null
+    },
+    {
+        "change_rev": null,
+        "idx": 2,
+        "last_err": 0.0005814561115384588,
+        "last_rev": 1130,
+        "last_value": 0.03944693965,
+        "name": "benchmarks.StaticNetwork.time_setup",
+        "pretty_name": "benchmarks.StaticNetwork.time_setup(50, 2, 'glpk')",
+        "prev_value": null
+    },
+    {
+        "change_rev": null,
+        "idx": 3,
+        "last_err": 0.015480390884615417,
+        "last_rev": 1130,
+        "last_value": 1.7625141095,
+        "name": "benchmarks.StaticNetwork.time_setup",
+        "pretty_name": "benchmarks.StaticNetwork.time_setup(50, 5, 'glpk')",
+        "prev_value": null
+    }
+]

@@ -1,0 +1,284 @@
+{
+    "benchmarks": {
+        "benchmarks.AggregatedParameter.time_calc_values": {
+            "code": "def time_calc_values(self, number_of_scenarios):\n    self.param.calc_values(self.ts)\n",
+            "goal_time": 2.0,
+            "name": "benchmarks.AggregatedParameter.time_calc_values",
+            "number": 0,
+            "param_names": [
+                "number_of_scenarios"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "500"
+                ]
+            ],
+            "pretty_name": "benchmarks.AggregatedParameter.time_calc_values",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds"
+        },
+        "benchmarks.AggregatedParameter.time_constant_calc_values": {
+            "code": "def time_constant_calc_values(self, number_of_scenarios):\n    self.constant_param.calc_values(self.ts)\n",
+            "goal_time": 2.0,
+            "name": "benchmarks.AggregatedParameter.time_constant_calc_values",
+            "number": 0,
+            "param_names": [
+                "number_of_scenarios"
+            ],
+            "params": [
+                [
+                    "10",
+                    "100",
+                    "500"
+                ]
+            ],
+            "pretty_name": "benchmarks.AggregatedParameter.time_constant_calc_values",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds"
+        },
+        "benchmarks.StaticNetwork.time_run": {
+            "code": "def time_run(self, nz, density, solver):\n    self.model.run()\n",
+            "goal_time": 2.0,
+            "name": "benchmarks.StaticNetwork.time_run",
+            "number": 0,
+            "param_names": [
+                "number_of_resource_zones",
+                "connection_density",
+                "solver"
+            ],
+            "params": [
+                [
+                    "10",
+                    "50"
+                ],
+                [
+                    "2",
+                    "5"
+                ],
+                [
+                    "'glpk'"
+                ]
+            ],
+            "pretty_name": "benchmarks.StaticNetwork.time_run",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds"
+        },
+        "benchmarks.StaticNetwork.time_setup": {
+            "code": "def time_setup(self, nz, density, solver):\n    self.model.dirty = True\n    self.model.setup()\n",
+            "goal_time": 2.0,
+            "name": "benchmarks.StaticNetwork.time_setup",
+            "number": 0,
+            "param_names": [
+                "number_of_resource_zones",
+                "connection_density",
+                "solver"
+            ],
+            "params": [
+                [
+                    "10",
+                    "50"
+                ],
+                [
+                    "2",
+                    "5"
+                ],
+                [
+                    "'glpk'"
+                ]
+            ],
+            "pretty_name": "benchmarks.StaticNetwork.time_setup",
+            "repeat": 0,
+            "timeout": 60.0,
+            "type": "time",
+            "unit": "seconds"
+        }
+    },
+    "graph_param_list": [
+        {
+            "Cython": "",
+            "arch": "x86_64",
+            "branch": "vectorise_aggregated_param",
+            "cpu": "Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz",
+            "future": "",
+            "machine": "einstein.localdomain",
+            "networkx": "",
+            "numpy": "",
+            "os": "Linux 4.0.4-303.fc22.x86_64",
+            "packaging": "",
+            "pandas": "",
+            "python": "3.5",
+            "ram": "16385520",
+            "scipy": "",
+            "tables": ""
+        },
+        {
+            "Cython": "",
+            "arch": "x86_64",
+            "branch": "master",
+            "cpu": "Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz",
+            "future": "",
+            "machine": "einstein.localdomain",
+            "networkx": "",
+            "numpy": "",
+            "os": "Linux 4.0.4-303.fc22.x86_64",
+            "packaging": "",
+            "pandas": "",
+            "python": "3.5",
+            "ram": "16385520",
+            "scipy": "",
+            "tables": ""
+        }
+    ],
+    "hash_length": 8,
+    "machines": {
+        "einstein.localdomain": {
+            "arch": "x86_64",
+            "cpu": "Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz",
+            "machine": "einstein.localdomain",
+            "os": "Linux 4.0.4-303.fc22.x86_64",
+            "ram": "16385520",
+            "version": 1
+        }
+    },
+    "pages": [
+        [
+            "",
+            "Grid view",
+            "Display as a agrid"
+        ],
+        [
+            "summarylist",
+            "List view",
+            "Display as a list"
+        ],
+        [
+            "regressions",
+            "Show regressions",
+            "Display information about recent regressions"
+        ]
+    ],
+    "params": {
+        "Cython": [
+            ""
+        ],
+        "arch": [
+            "x86_64"
+        ],
+        "branch": [
+            "master",
+            "vectorise_aggregated_param"
+        ],
+        "cpu": [
+            "Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz"
+        ],
+        "future": [
+            ""
+        ],
+        "machine": [
+            "einstein.localdomain"
+        ],
+        "networkx": [
+            ""
+        ],
+        "numpy": [
+            ""
+        ],
+        "os": [
+            "Linux 4.0.4-303.fc22.x86_64"
+        ],
+        "packaging": [
+            ""
+        ],
+        "pandas": [
+            ""
+        ],
+        "python": [
+            "3.5"
+        ],
+        "ram": [
+            "16385520"
+        ],
+        "scipy": [
+            ""
+        ],
+        "tables": [
+            ""
+        ]
+    },
+    "project": "pywr",
+    "project_url": "https://pywr.github.io",
+    "revision_to_date": {
+        "740": 1475004903000,
+        "1018": 1487334202000,
+        "1019": 1487334284000,
+        "1020": 1487350920000,
+        "1022": 1487359793000,
+        "1024": 1487370052000,
+        "1025": 1487462347000,
+        "1028": 1487612188000,
+        "1034": 1487671281000,
+        "1038": 1487882641000,
+        "1041": 1487892902000,
+        "1045": 1488018404000,
+        "1068": 1488802791000,
+        "1077": 1488888497000,
+        "1078": 1488888512000,
+        "1085": 1488997478000,
+        "1087": 1488998576000,
+        "1088": 1488999144000,
+        "1089": 1488999227000,
+        "1103": 1489090813000,
+        "1109": 1489106617000,
+        "1111": 1489143128000,
+        "1119": 1489257288000,
+        "1120": 1489257794000,
+        "1121": 1489258035000,
+        "1125": 1489419397000,
+        "1127": 1489526851000,
+        "1130": 1489611727000
+    },
+    "revision_to_hash": {
+        "740": "9b83c359dfc3a899cb8f409ca65a3c76f8d7060d",
+        "1018": "536fa6393cd31aa7e0693371506946ca5c8df186",
+        "1019": "1d287e7b96650a646f86b90bf838f88d19455b03",
+        "1020": "d5b310f0b40b867410504f284cbaef74f1a7a20a",
+        "1022": "6a42e74b8b8984605202642e22cd93f39dc4b216",
+        "1024": "c0270b945501947b6e24519f11c86c7e0a2f40f6",
+        "1025": "41e77a24da37f971cc9edcf65a445df7ae5be75c",
+        "1028": "77df32ebb3daba24d15ad3a16fd64f78d660781a",
+        "1034": "a13a93c8c54582e483a11053144ac25ce559ff00",
+        "1038": "a00fa115f38787c2ab7b53d65825cea45e22775d",
+        "1041": "c3dd35498c413eb3333dde4c22a78c7433548cae",
+        "1045": "612b2949e1682632f137634fca59b4feeb66027c",
+        "1068": "f6a763e917984e42cbd27fc0ba3cc499369e82b2",
+        "1077": "85e20579c595efe243bc34c42dc94f9bd1d817e5",
+        "1078": "eb03b69ede975aec0797abbd1e508a39953750f7",
+        "1085": "85b2701c7f01a9e6c15568f10ee62f7b7d26aa2a",
+        "1087": "46055870c866c57abd714e7b9e77879b33efaab0",
+        "1088": "6cf5754423717ec38ce0b5edd1acfda1852cfdea",
+        "1089": "fabbf6fd5905516e55c594e37d47b096661e24dc",
+        "1103": "065bc8abf4609aae77ba14a30f6d7310d43cc5e0",
+        "1109": "6731b66f1a4de2f846f637b3a4f78d46a0c1c56b",
+        "1111": "aee2841f1c9c01f13bfd97254866bbbad1ab8261",
+        "1119": "b638b0c5616d39bf9b3088c037060c184c092c8e",
+        "1120": "439d4dba48d5de977b33e05f860cc0724850d571",
+        "1121": "290aeaf73f976c576028af6a513def245e57a173",
+        "1125": "919dd7e7829d106ba10408ae2f1ad2d71bd01f21",
+        "1127": "5e2e9cfc5a06c053dd522161212e7e5253bb80d2",
+        "1130": "060c32f8bbd42308498663d4b1073ad101984828"
+    },
+    "show_commit_url": "https://github.com/pywr/pywr/commit/",
+    "tags": {
+        "0.1": 740,
+        "v0.2": 1018,
+        "v0.3": 1088
+    }
+}
