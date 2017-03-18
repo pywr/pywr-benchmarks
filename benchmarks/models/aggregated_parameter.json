@@ -1,0 +1,52 @@
+{
+  "metadata": {
+      "title": "Simple 1",
+      "description": "A very simple example.",
+      "minimum_version": "0.1"
+  },
+  "timestepper": {
+      "start": "2015-01-01",
+      "end": "2015-02-1",
+      "timestep": 7
+  },
+  "nodes": [
+      {
+          "type": "input",
+          "name": "input"
+      },
+      {
+          "type": "link",
+          "name": "link"
+      },
+      {
+          "type": "output",
+          "name": "output",
+          "cost": -10,
+          "max_flow": "max_flow_param"
+      }
+  ],
+  "edges": [
+      ["input", "link"],
+      ["link", "output"]
+  ],
+  "parameters": {
+      "max_flow_param": {
+          "type": "aggregated",
+          "agg_func": "sum",
+          "parameters": [
+              {
+                  "type": "constant",
+                  "value": 5.0
+              },
+              {
+                  "type": "constant",
+                  "value": 5.0
+              },
+              {
+                  "type": "constant",
+                  "value": 5.0
+              }
+          ]
+      }
+  }
+}

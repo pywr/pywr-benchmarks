@@ -2,6 +2,7 @@ from pywr.core import Model
 from .json_utils import add_node, update_node, add_connection
 import numpy as np
 from scipy import stats
+import os
 
 
 def make_simple_resource_zone(data, name, supply_loc=9, supply_scale=1, demand_loc=8, demand_scale=3):
@@ -110,70 +111,23 @@ class AggregatedParameter:
     def setup(self, number_of_scenarios):
         from pywr.core import Scenario
 
-        data = {
-            "metadata": {
-                "title": "Simple 1",
-                "description": "A very simple example.",
-                "minimum_version": "0.1"
-            },
-            "timestepper": {
-                "start": "2015-01-01",
-                "end": "2015-02-1",
-                "timestep": 7
-            },
-            "nodes": [
-                {
-                    "type": "input",
-                    "name": "input",
-                },
-                {
-                    "type": "link",
-                    "name": "link"
-                },
-                {
-                    "type": "output",
-                    "name": "output",
-                    "cost": -10,
-                    "max_flow": "max_flow_param"
-                }
-            ],
-            "edges": [
-                ["input", "link"],
-                ["link", "output"]
-            ],
-            "parameters": {
-                "max_flow_param": {
-                    "type": "aggregated",
-                    "agg_func": "sum",
-                    "parameters": [
-                        {
-                            "type": "constant",
-                            "value": 5.0
-                        },
-                        {
-                            "type": "constant",
-                            "value": 5.0
-                        },
-                        {
-                            "type": "constant",
-                            "value": 5.0
-                        }
-                    ]
-                }
-            }
-        }
+        filename = os.path.join(os.path.dirname(__file__), "models", "aggregated_parameter.json")
 
-        m = Model.load(data, )
+        m = Model.load(filename, )
         Scenario(m, name='benchmark', size=number_of_scenarios)
 
         m.setup()
         self.model = m
 
         self.param = m.parameters['max_flow_param']
+        self.constant_param = list(self.param.parameters)[0]
         self.ts = m.timestepper.current
 
     def time_calc_values(self, number_of_scenarios):
         self.param.calc_values(self.ts)
+
+    def time_constant_calc_values(self, number_of_scenarios):
+        self.constant_param.calc_values(self.ts)
 
     def teardown(self, number_of_scenarios):
         del self.model
