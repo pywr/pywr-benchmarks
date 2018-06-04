@@ -1,78 +1,12 @@
-from pywr.core import Model
-from .json_utils import add_node, update_node, add_connection
+from pywr.core import Model, Input, Link, Output
+from .random_network import make_simple_model_direct
 import numpy as np
-from scipy import stats
 import os
 
 
-def make_simple_resource_zone(data, name, supply_loc=9, supply_scale=1, demand_loc=8, demand_scale=3):
-    """
-    Make a very simply WRZ with a supply, WTW and demand.
-
-
-    """
-
-    # Generate supply side maximum flow
-    max_flow = stats.norm.rvs(loc=supply_loc, scale=supply_scale, size=1)[0]
-    add_node(data, name="Supply-{}".format(name), type="input", cost=-10, max_flow=max(max_flow, 0))
-
-    # No flow constraint on WTW
-    add_node(data, name="WTW-{}".format(name), type="link", cost=1)
-
-    # Generate demand side maximum flow
-    max_flow = stats.norm.rvs(loc=demand_loc, scale=demand_scale, size=1)[0]
-    add_node(data, name="Demand-{}".format(name), type="output", cost=-500, max_flow=max(max_flow, 0))
-
-    add_connection(data, "Supply-{}".format(name), "WTW-{}".format(name))
-    add_connection(data, "WTW-{}".format(name), "Demand-{}".format(name))
-
-
-def make_simple_connections(data, number_of_resource_zones, density=10, loc=15, scale=5):
-    num_connections = (number_of_resource_zones ** 2) * density // 100 // 2
-
-    connections = np.random.randint(number_of_resource_zones, size=(num_connections, 2))
-    max_flow = stats.norm.rvs(loc=loc, scale=scale, size=num_connections)
-
-    added = []
-
-    for (i, j), mf in zip(connections, max_flow):
-        if (i, j) in added or i == j:
-            continue
-        name = "Transfer {}-{}".format(i, j)
-        add_node(data, name=name, type="link", max_flow=max(mf, 0), cost=1)
-
-        add_connection(data, "WTW-{}".format(i), name)
-        add_connection(data, name, "WTW-{}".format(j))
-
-        added.append((i, j))
-
-
-
-def make_simple_model(number_of_resource_zones=1, connection_density=10, solver=None):
-    data = {
-        "metadata": {
-            "title": "Simple 1",
-            "description": "A very simple example.",
-            "minimum_version": "0.1"
-        },
-        "timestepper": {
-            "start": "2015-01-01",
-            "end": "2015-02-1",
-            "timestep": 1
-        },
-        "nodes": [],
-        "edges": []
-    }
-
-    for i in range(number_of_resource_zones):
-        make_simple_resource_zone(data, "{}".format(i))
-
-    make_simple_connections(data, number_of_resource_zones, density=connection_density)
-    return Model.load(data, solver=solver)
-
-
-
 class StaticNetwork:
+    """ Bench mark a randomly generated steady state network. """
+
     params = [
         [10, 50],        # Number of zones
         [2, 5],     # Connection density
@@ -86,8 +20,12 @@ class StaticNetwork:
 
     def setup(self, nz, density, solver):
         np.random.seed(1337)
-        self.model = make_simple_model(nz, density, solver)
-        self.model.setup()
+        self.model = make_simple_model_direct(nz, density, solver)
+        try:
+            self.model.setup()
+        except:
+            pass
+        self.model.reset()
 
     def teardown(self, nz, density, solver):
         del self.model
@@ -100,34 +38,87 @@ class StaticNetwork:
         self.model.setup()
 
 
-class AggregatedParameter:
+def load_xml_model(filename=None, data=None):
+    """Load a test model and check it"""
+    import xml.etree.ElementTree as ET
+    if data is None:
+        path = os.path.join(os.path.dirname(__file__), 'models', filename)
+        with open(path, 'r') as f:
+            data = f.read()
+    else:
+        path = None
+    xml = ET.fromstring(data)
+    model = Model.from_xml(xml, path=path)
+    return model
+
+
+class Simple1:
+    """ Benchmark `simple1.json` test model.
+
+    For older version of Pywr this benchmark falls back to using `sample1.xml`. This
+    model is very simple and is mostly a throughput test.
+    """
     params = [
-        [10, 100, 500],
+        [1, 10, 100, 500],
     ]
     param_names = [
         'number_of_scenarios',
     ]
 
     def setup(self, number_of_scenarios):
-        from pywr.core import Scenario
 
-        filename = os.path.join(os.path.dirname(__file__), "models", "aggregated_parameter.json")
+        directory = os.path.join(os.path.dirname(__file__), "models")
 
-        m = Model.load(filename, )
-        Scenario(m, name='benchmark', size=number_of_scenarios)
+        try:
+            with open(os.path.join(directory, 'simple1.json')) as fh:
+                m = Model.load(fh)
+        except:
+            m = load_xml_model(os.path.join(directory, 'simple1.xml'))
 
-        m.setup()
+        if number_of_scenarios > 1:
+            from pywr.core import Scenario
+            Scenario(m, name='benchmark', size=number_of_scenarios)
+
+        try:
+            m.setup()
+        except:
+            pass
+
         self.model = m
 
-        self.param = m.parameters['max_flow_param']
-        self.constant_param = list(self.param.parameters)[0]
-        self.ts = m.timestepper.current
+    def time_run(self, number_of_scenarios):
+        self.model.reset()
+        for i in range(100):
+            self.model.step()
 
-    def time_calc_values(self, number_of_scenarios):
-        self.param.calc_values(self.ts)
 
-    def time_constant_calc_values(self, number_of_scenarios):
-        self.constant_param.calc_values(self.ts)
+class DemandSaving1:
+    """ Benchmark `demand_saving1.json` test model.
 
-    def teardown(self, number_of_scenarios):
-        del self.model
+    This model includes a more complex combination of `Parameter` objects. Useful
+    to find regressions in the calculation of these.
+    """
+    params = [
+        [1, 10, 100, 500],
+    ]
+    param_names = [
+        'number_of_scenarios',
+    ]
+
+    def setup(self, number_of_scenarios):
+
+        directory = os.path.join(os.path.dirname(__file__), "models")
+
+        with open(os.path.join(directory, 'demand_saving1.json')) as fh:
+            m = Model.load(fh)
+
+        if number_of_scenarios > 1:
+            from pywr.core import Scenario
+            Scenario(m, name='benchmark', size=number_of_scenarios)
+
+        if hasattr(m, 'setup'):
+            m.setup()
+        self.model = m
+
+    def time_run(self, number_of_scenarios):
+        self.model.run()
