@@ -7,12 +7,12 @@ import pandas
 
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "models")
 
-class StaticNetwork:
+class RandonSteadyNetwork:
     """ Bench mark a randomly generated steady state network. """
 
     params = [
-        [10, 50],        # Number of zones
-        [2, 5],     # Connection density
+        [2, 5, 10, 25, 50],        # Number of zones
+        [1, 2, 5],     # Connection density
         ['glpk', ]  # solver
     ]
     param_names = [
