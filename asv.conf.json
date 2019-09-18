@@ -59,6 +59,7 @@
     //     "pip+emcee": [""],   // emcee is only available for install with pip.
     // },
     "matrix": {
+        "setuptools_scm": [],
         "numpy": [],
         "scipy": [],
         "Cython": [],
@@ -67,8 +68,8 @@
         "networkx": [],
         "tables": [],
         "future": [],
-        "IPython": [],
-        "git+https://github.com/bradfordboyle/pyglpk": []
+        "IPython": []
+        // "git+https://github.com/bradfordboyle/pyglpk": []
     }
 
     // Combinations of libraries/python versions can be excluded/included

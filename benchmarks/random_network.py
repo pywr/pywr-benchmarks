@@ -1,4 +1,5 @@
 from pywr.core import Model, Input, Link, Output
+from pywr.parameters import ArrayIndexedParameter
 from .json_utils import add_node, update_node, add_connection
 import numpy as np
 from scipy import stats
@@ -25,15 +26,23 @@ def make_simple_resource_zone(data, name, supply_loc=9, supply_scale=1, demand_l
     add_connection(data, "WTW-{}".format(name), "Demand-{}".format(name))
 
 
-def make_simple_resource_zone_direct(model, name, supply_loc=9, supply_scale=1, demand_loc=8, demand_scale=3):
+def make_simple_resource_zone_direct(model, name, supply_loc=9, supply_scale=1, demand_loc=8, demand_scale=3,
+                                     supply_time_varying=True):
     """
     Make a very simply WRZ with a supply, WTW and demand.
 
 
     """
     # Generate supply side maximum flow
-    max_flow = stats.norm.rvs(loc=supply_loc, scale=supply_scale, size=1)[0]
-    inpt = Input(model, name="Supply-{}".format(name), cost=-10, max_flow=max(max_flow, 0))
+    if supply_time_varying:
+        max_flow = stats.norm.rvs(loc=supply_loc, scale=supply_scale, size=len(model.timestepper))
+        max_flow[max_flow < 0] = 0.0
+        max_flow = ArrayIndexedParameter(model, max_flow)
+    else:
+        max_flow = stats.norm.rvs(loc=supply_loc, scale=supply_scale, size=1)[0]
+        max_flow = max(max_flow, 0)
+
+    inpt = Input(model, name="Supply-{}".format(name), cost=-10, max_flow=max_flow)
 
     # No flow constraint on WTW
     link = Link(model, name="WTW-{}".format(name), cost=1)
@@ -69,12 +78,10 @@ def make_simple_connections(data, number_of_resource_zones, density=10, loc=15, 
 def make_simple_connections_direct(model, number_of_resource_zones, density=10, loc=15, scale=5):
     num_connections = (number_of_resource_zones ** 2) * density // 100 // 2
 
-    connections = np.random.randint(number_of_resource_zones, size=(num_connections, 2))
-    max_flow = stats.norm.rvs(loc=loc, scale=scale, size=num_connections)
-
     added = []
-
-    for (i, j), mf in zip(connections, max_flow):
+    while len(added) < num_connections:
+        i, j = np.random.randint(number_of_resource_zones, size=2)
+        mf = stats.norm.rvs(loc=loc, scale=scale, size=1)
         if (i, j) in added or i == j:
             continue
         name = "Transfer {}-{}".format(i, j)
@@ -95,6 +102,7 @@ def make_simple_connections_direct(model, number_of_resource_zones, density=10, 
 
         from_node.connect(link)
         link.connect(to_node)
+        added.append((i, j))
 
 
 def make_simple_model(number_of_resource_zones=1, connection_density=10, solver=None):
@@ -120,11 +128,11 @@ def make_simple_model(number_of_resource_zones=1, connection_density=10, solver=
     return Model.load(data, solver=solver)
 
 
-def make_simple_model_direct(number_of_resource_zones=1, connection_density=10, solver=None):
+def make_simple_model_direct(number_of_resource_zones=1, connection_density=10, solver=None, time_varying=True):
     model = Model(solver=solver)
 
     for i in range(number_of_resource_zones):
-        make_simple_resource_zone_direct(model, "{}".format(i))
+        make_simple_resource_zone_direct(model, "{}".format(i), supply_time_varying=time_varying)
 
     make_simple_connections_direct(model, number_of_resource_zones, density=connection_density)
     return model

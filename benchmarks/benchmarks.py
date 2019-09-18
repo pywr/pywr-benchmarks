@@ -7,38 +7,79 @@ import pandas
 
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "models")
 
-class RandonSteadyNetwork:
+
+class RandomNetwork:
     """ Bench mark a randomly generated steady state network. """
 
     params = [
-        [2, 5, 10, 25, 50],        # Number of zones
+        [2, 5, 10, 20, 30, 40, 50],        # Number of zones
         [1, 2, 5],     # Connection density
-        ['glpk', ]  # solver
+        ['glpk', 'glpk-edge'],  # solver
+        [True, False],
     ]
     param_names = [
         'number_of_resource_zones',
         'connection_density',
-        'solver'
+        'solver',
+        'time_varying',
     ]
 
-    def setup(self, nz, density, solver):
+    def setup(self, nz, density, solver, time_varying):
         np.random.seed(1337)
-        self.model = make_simple_model_direct(nz, density, solver)
+        self.model = make_simple_model_direct(nz, connection_density=density, solver=solver, time_varying=time_varying)
         try:
             self.model.setup()
         except:
             pass
         self.model.reset()
 
-    def teardown(self, nz, density, solver):
+    def teardown(self, nz, density, solver, time_varying):
         del self.model
 
-    def time_run(self, nz, density, solver):
+    def time_run(self, nz, density, solver, time_varying):
         self.model.run()
 
-    def time_setup(self, nz, density, solver):
+    def time_setup(self, nz, density, solver, time_varying):
         self.model.dirty = True
         self.model.setup()
+
+
+class RandomNetworkScenarios:
+    """Benchmark a randomly generated steady state network. """
+
+    params = [
+        [5, 20, 50],        # Number of zones
+        [2, 5],     # Connection density
+        ['glpk', 'glpk-edge'],  # solver
+        [10, 100, 1000],
+    ]
+    param_names = [
+        'number_of_resource_zones',
+        'connection_density',
+        'solver',
+        'number_of_scenarios',
+    ]
+
+    def setup(self, nz, density, solver, number_of_scenarios):
+        np.random.seed(1337)
+        self.model = make_simple_model_direct(nz, connection_density=density, solver=solver, time_varying=True)
+
+        self.model.timestepper.end = '2015-01-5'
+
+        from pywr.core import Scenario
+        Scenario(self.model, name='benchmark', size=number_of_scenarios)
+
+        try:
+            self.model.setup()
+        except:
+            pass
+        self.model.reset()
+
+    def teardown(self, nz, density, solver, number_of_scenarios):
+        del self.model
+
+    def time_run(self, nz, density, solver, number_of_scenarios):
+        self.model.run()
 
 
 def load_xml_model(filename=None, data=None):
@@ -74,7 +115,7 @@ class Simple1:
             with open(os.path.join(MODELS_DIR, 'simple1.json')) as fh:
                 m = Model.load(fh)
         except:
-            m = load_xml_model(os.path.join(directory, 'simple1.xml'))
+            m = load_xml_model(os.path.join(MODELS_DIR, 'simple1.xml'))
 
         if number_of_scenarios > 1:
             from pywr.core import Scenario
@@ -104,6 +145,7 @@ class DemandSaving1:
     ]
     param_names = [
         'number_of_scenarios',
+        'solver',
     ]
 
     def setup(self, number_of_scenarios):
@@ -130,6 +172,7 @@ class SimpleThames:
     """
     params = [
         [1, 2, 5, 10, 20, 40, 80, 160],
+        ['glpk', 'glpk-edge']  # solver
     ]
     param_names = [
         'number_of_scenarios',
@@ -167,7 +210,7 @@ class SimpleThames:
         total_deficit = TotalDeficitNodeRecorder(model, model.nodes["demand1"], name="total deficit",
                                                  agg_func=deficit_agg_func)
 
-    def setup(self, number_of_scenarios, start_date='1970-01-01', end_date='1980-01-01'):
+    def setup(self, number_of_scenarios, solver, start_date='1970-01-01', end_date='1980-01-01'):
 
         with open(os.path.join(MODELS_DIR, 'simple_thames.json')) as fh:
             data = json.load(fh)
@@ -177,7 +220,7 @@ class SimpleThames:
             del data['recorders']
 
         # Load the model
-        m = Model.load(data, path=MODELS_DIR)
+        m = Model.load(data, path=MODELS_DIR, solver=solver)
 
         m.timestepper.start = start_date
         m.timestepper.end = end_date
@@ -201,5 +244,5 @@ class SimpleThames:
         m.setup()
         self.model = m
 
-    def time_run(self, number_of_scenarios):
+    def time_run(self, number_of_scenarios, solver):
         self.model.run()

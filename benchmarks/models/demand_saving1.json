@@ -1,6 +1,7 @@
 {
     "metadata": {
         "title": "Demand Saving",
+        "minimum_version": "0.1",
         "description": "Demand saving using an IndexedArrayParameter"
     },
     "timestepper": {

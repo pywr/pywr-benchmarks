@@ -2,6 +2,7 @@
 {
     "metadata": {
         "title": "Simple 1",
+        "minimum_version": "0.1",
         "description": "A very simple example."
     },
     "timestepper": {
