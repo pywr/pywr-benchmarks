@@ -133,6 +133,14 @@ class Simple1:
         for i in range(100):
             self.model.step()
 
+    def mem_model(self, number_of_scenarios):
+        return self.model
+
+    def peakmem_run(self, number_of_scenarios):
+        self.model.reset()
+        for i in range(100):
+            self.model.step()
+
 
 class DemandSaving1:
     """ Benchmark `demand_saving1.json` test model.
@@ -162,6 +170,12 @@ class DemandSaving1:
         self.model = m
 
     def time_run(self, number_of_scenarios):
+        self.model.run()
+
+    def mem_model(self, number_of_scenarios):
+        return self.model
+
+    def peakmem_run(self, number_of_scenarios):
         self.model.run()
 
 
@@ -245,4 +259,10 @@ class SimpleThames:
         self.model = m
 
     def time_run(self, number_of_scenarios, solver):
+        self.model.run()
+
+    def mem_model(self, number_of_scenarios, solver):
+        return self.model
+
+    def peakmem_run(self, number_of_scenarios, solver):
         self.model.run()
